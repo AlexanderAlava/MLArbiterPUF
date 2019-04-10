@@ -77,18 +77,19 @@ response11500 = np.array([1,1,0,0,1,0,1,1,0,1,1,0,1,1,1,0,0,1,1,0,0,0,0,0,0,0,0,
 response12000 = np.array([0,0,1,0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,0,1,1,0,0,0,0,0,1,1,1,0,1,0,0,0,1,1,0,0,0,1,0,1,0,0,1,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1,1,0,0,0,1,0,0,1,1,1,1,1,0,0,0,1,1,0,0,0,1,0,0,1,0,0,1,1,1,0,0,0,1,1,0,0,1,1,0,1,0,1,1,1,0,1,0,1,1,0,1,0,0,0,1,0,1,1,1,1,1,0,1,0,1,1,1,0,0,1,1,0,1,0,0,1,1,0,1,0,1,1,1,0,1,0,0,1,0,0,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,1,1,1,1,0,0,1,0,0,0,0,1,0,1,1,0,1,1,1,1,1,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1,0,1,1,1,1,0,1,0,0,1,0,1,1,1,1,0,0,0,0,0,1,0,1,0,0,0,1,0,0,0,1,1,1,1,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,1,1,0,1,0,0,0,0,0,0,1,0,1,1,0,0,1,1,0,1,1,1,0,1,0,1,1,1,1,0,0,1,0,0,1,0,0,1,0,0,1,1,0,1,1,0,1,1,0,0,1,1,0,1,0,0,0,1,1,0,0,1,0,1,1,1,0,1,1,0,1,0,1,1,0,1,0,0,0,0,1,0,1,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,1,1,1,0,1,0,1,1,1,1,0,1,0,1,1,1,0,0,1,1,1,0,1,1,0,0,1,1,0,0,1,1,1,0,0,0,1,0,0,0,0,0,1,1,1,1,0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,1,1,0,0,1,0,0,0,0,1,0,0,0,0,0,1,1,0,0,1,1,1,0,0,1,0,0,1,1,1,0,0,0,1,1,0,0,1,1,0,1,1,1,1,1,0,0,1,0,1,1,0,0,0,1,1,1,0,1,1,0,1,1,0,0,0,1,0,0,0,1,0,1,0]) # 11501 to 12000
 
 # In here we would list the groups that we want to use for training, example provided
-train_data = np.concatenate((data500, data1000, data1500, data2000, data2500, data3000, data3500, data4000))
-train_responses = np.concatenate((response500, response1000, response1500, response2000, response2500, response3000, response3500, response4000))
+train_data = np.concatenate((data500, data1000, data1500, data2000, data2500, data3000, data3500, data4000, data4500, data5000, data5500, data6000, data6500, data7000, data7500, data8000, data8500, data9000, data9500, data10000))
+train_responses = np.concatenate((response500, response1000, response1500, response2000, response2500, response3000, response3500, response4000, response4500, response5000, response5500, response6000, response6500, response7000, response7500, response8000, response8500, response9000, response9500, response10000))
 
 # In here we would list the groups that we want to use for testing, example provided
-test_data = np.concatenate((data11000, data11500))
-test_responses = np.concatenate((response11000, response11500))
+test_data = np.concatenate((data10500, data11000, data11500, data12000))
+test_responses = np.concatenate((response10500, response11000, response11500, response12000))
 
 # This is how the model is built
 model = keras.Sequential([
-    keras.layers.Flatten(input_shape=(4000, 1)), #This first layer doesn't work and we need to see what to add here
-    keras.layers.Dense(128, activation=tf.nn.relu),
-    keras.layers.Dense(10, activation=tf.nn.softmax)
+    #keras.layers.Flatten(input_shape=(4000, 1)), #This first layer doesn't work and we need to see what to add here
+    keras.layers.Dense(60, activation=tf.nn.relu, input_shape=(1,)),
+    keras.layers.Dense(128, activation=tf.nn.softmax),
+    keras.layers.Dense(2)
 ])
 
 # This is where parameters of the model are described, we might not need any changes here
@@ -101,6 +102,6 @@ model.compile(optimizer='adam',
 # Here the data is added to the model and the number of learning rounds is described
 model.fit(train_data, train_responses, epochs=5)
 
-#test_loss, test_acc = model.evaluate(test_data, test_responses)
+test_loss, test_acc = model.evaluate(test_data, test_responses)
 
-#print('Test accuracy:', test_acc)
+print('Test accuracy:', test_acc)
