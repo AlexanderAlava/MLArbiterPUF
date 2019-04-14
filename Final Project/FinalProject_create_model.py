@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from keras.models import Sequential
 from keras.layers import *
 
@@ -23,7 +24,7 @@ model.compile(loss="mean_squared_error", optimizer="adam")
 model.fit(
     X,
     Y,
-    epochs=10,
+    epochs=2000,
     verbose=2,
     shuffle=True
 
@@ -43,36 +44,43 @@ print("The mean squared error (MSE) for the test data set is: {}".format(test_er
 
 
 # Load the data we make to use to make a prediction
-X = pd.read_csv("dataToPredict.csv").values
+X = pd.read_csv("dataToPredict.csv", header=None).values
 
-print(X)
 
 # Load the data with correct result to compare to prediction
-result = pd.read_csv("expectedResult.csv").values
+result = pd.read_csv("expectedResult.csv" , header=None).values
+
+#np.array(result).tolist()
+
 counter = 0
 predictionResult = []
+
 # Make a prediction with the neural network
 prediction = model.predict(X)
 
-#print(counter)
 
-# Normalizing Predicition to Binary value
+# Normalizing Prediction to Binary value
 for i in prediction:
     if i > 0.50:
         predictionResult.append(1)
     else:
         predictionResult.append(0)
 
+#np.array(predictionResult).tolist()
 
+# Checking Prediction
 #for i in predictionResult:
-  #  for j in result:
-   #     if i == j:
-    #        counter += 1
+    #print("Real result:{}  Prediction Result:{} ".format(result[i], predictionResult[i]))
+
+counter = len([i for i, j in zip(predictionResult, result) if i == j])
+
+percent = (counter / len(result)) * 100
 
 print(prediction)
 print(predictionResult)
 
-print(result)
+
 
 print("counter is equal to {}".format(counter))
 
+print("Accuracy: {}%".format(percent))
