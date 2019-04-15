@@ -1,38 +1,46 @@
 import pandas as pd
-import numpy as np
+#import numpy as np
+from keras import optimizers
 from keras.models import Sequential
 from keras.layers import *
+from keras.utils.vis_utils import plot_model
 
-training_data_df = pd.read_csv("CRPSets_training.csv")
+
+
+training_data_df = pd.read_csv("CRPSets_11k_training.csv", header=None)
 
 X = training_data_df.drop(training_data_df.columns[[64]], axis=1).values
 Y = training_data_df[training_data_df.columns[64]].values
 
 # Define the model
 model = Sequential()
-model.add(Dense(50, input_dim=64, activation='relu'))
+model.add(Dense(100, input_dim=64, activation='relu'))
+model.add(Dense(200, activation='relu'))
 model.add(Dense(100, activation='relu'))
-model.add(Dense(50, activation='relu'))
 
 model.add(Dense(1, activation='linear'))
 
-model.compile(loss="mean_squared_error", optimizer="adam")
-
+#adam = optimizers.Adam(lr = 0.001)
+model.compile(loss="binary_crossentropy", optimizer="adam")
+#mean_squared_error
 
 # Train the model
 
 model.fit(
     X,
     Y,
-    epochs=2000,
+    batch_size=50,
+    epochs=100,
     verbose=2,
     shuffle=True
 
 )
 
+print(model.summary())
 
+plot_model(model, to_file='MODEL.png')
 # Load the separate test data set
-test_data_df = pd.read_csv("CRPSets_test.csv")
+test_data_df = pd.read_csv("CRPSets_11k_testing.csv", header=None)
 
 
 X_test = test_data_df.drop(training_data_df.columns[[64]], axis=1).values
@@ -48,7 +56,7 @@ X = pd.read_csv("dataToPredict.csv", header=None).values
 
 
 # Load the data with correct result to compare to prediction
-result = pd.read_csv("expectedResult.csv" , header=None).values
+result = pd.read_csv("expectedResult.csv", header=None).values
 
 #np.array(result).tolist()
 
@@ -61,7 +69,7 @@ prediction = model.predict(X)
 
 # Normalizing Prediction to Binary value
 for i in prediction:
-    if i > 0.50:
+    if i > 0.1:
         predictionResult.append(1)
     else:
         predictionResult.append(0)
