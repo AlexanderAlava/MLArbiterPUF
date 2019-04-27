@@ -1,36 +1,49 @@
 import pandas as pd
-#import numpy as np
+import numpy as np
 from keras import optimizers
 from keras.models import Sequential
 from keras.layers import *
 from keras.utils.vis_utils import plot_model
+from sklearn.metrics import *
 
-
+#check out recurrent nueral network
 
 training_data_df = pd.read_csv("CRPSets_11k_training.csv", header=None)
 
 X = training_data_df.drop(training_data_df.columns[[64]], axis=1).values
 Y = training_data_df[training_data_df.columns[64]].values
 
-# Define the model
+#Relu= Rectify linear unit
+
+#Define the model
 model = Sequential()
-model.add(Dense(100, input_dim=64, activation='relu'))
-model.add(Dense(200, activation='relu'))
-model.add(Dense(100, activation='relu'))
+model.add(Dense(32, input_dim=64, activation='relu'))
+model.add(Dense(64, activation='relu'))
+model.add(Dense(32, activation='relu'))
 
-model.add(Dense(1, activation='linear'))
 
-#adam = optimizers.Adam(lr = 0.001)
+#np.random.shuffel
+#sigmoid
+model.add(Dense(1, activation='sigmoid'))
+
+
+
+
+
+
+
+#adam = optimizers.Adam(lr = 0.01)
 model.compile(loss="binary_crossentropy", optimizer="adam")
 #mean_squared_error
+#binary_corssentropy
 
 # Train the model
 
 model.fit(
     X,
     Y,
-    batch_size=50,
-    epochs=100,
+    batch_size=11000,
+    epochs=200,
     verbose=2,
     shuffle=True
 
@@ -67,9 +80,13 @@ predictionResult = []
 prediction = model.predict(X)
 
 
+
+
 # Normalizing Prediction to Binary value
+# predict result = predict.round
+
 for i in prediction:
-    if i > 0.1:
+    if i >= 0.5:
         predictionResult.append(1)
     else:
         predictionResult.append(0)
@@ -77,8 +94,8 @@ for i in prediction:
 #np.array(predictionResult).tolist()
 
 # Checking Prediction
-#for i in predictionResult:
-    #print("Real result:{}  Prediction Result:{} ".format(result[i], predictionResult[i]))
+for i in predictionResult:
+    print("Real result:{}  Prediction Result:{} ".format(result[i], predictionResult[i]))
 
 counter = len([i for i, j in zip(predictionResult, result) if i == j])
 
@@ -88,6 +105,14 @@ print(prediction)
 print(predictionResult)
 
 
+#res = list(result.T)
+
+#res2 = list(np.reshape(res, (50)))
+
+#print("result start")
+#print(res2)
+
+#print(confusion_matrix(res2, predictionResult))
 
 print("counter is equal to {}".format(counter))
 
