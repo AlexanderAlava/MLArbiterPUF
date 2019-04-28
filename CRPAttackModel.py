@@ -12,7 +12,7 @@ import pandas as pd
 print(tf.__version__)
 
 data = pd.read_csv("CRPSets.csv", header=None)
-sampled_data = data.sample(frac=0.66666667)
+sampled_data = data.sample(frac=0.66666667, random_state = 1)
 
 
 
@@ -40,7 +40,7 @@ model = keras.Sequential([
     keras.layers.Dropout(0.2),
     keras.layers.Dense(32, activation=tf.nn.relu),
     keras.layers.Dropout(0.1),
-    keras.layers.Dense(1, activation=tf.nn.relu)
+    keras.layers.Dense(1, activation=tf.nn.sigmoid)
 ])
 
 #L1 and L2 regularization
